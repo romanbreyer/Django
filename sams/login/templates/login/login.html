@@ -1,0 +1,28 @@
+{% load static %}
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="{% static 'login/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'login/css/signin.css' %}" rel="stylesheet">
+    <link rel="icon" href="{% static 'login/img/favicon.ico' %}">
+  </head>
+  <body class="text-center">
+    <form class="form-signin" action="" method="POST">
+      {% csrf_token %}
+        <img class="mb-4" src="{% static 'login/img/unikoeln_logo.png' %}" alt="" width="72" height="72">
+        <h1 class="h3 mb-3 font-weight-normal">Bitte einloggen.</h1>
+        {% if success is False %}
+          <div class="alert alert-danger">Username oder Passwort falsch!</div>
+        {% endif %}
+        <input type="email" name="email" id="inputEmail" class="form-control" placeholder="E-Mail Adresse" required autofocus>
+        <input type="password" name="passwort" id="inputPassword" class="form-control" placeholder="Passwort" required>
+          <label class="mt-2">
+            Noch nicht registriert? <a href="{% url 'registrierung' %}">Hier registrieren</a>
+          </label>
+        <button class="btn btn-lg btn-primary btn-block mt-2" type="submit">Einloggen</button>
+        <p class="mt-5 mb-3 text-muted">Made with ❤ in Cologne.</p>
+    </form>
+  </body>
+</html>

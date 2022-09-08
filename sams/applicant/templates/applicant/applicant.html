@@ -1,0 +1,31 @@
+{% extends 'applicant/applicant_base.html' %}
+
+
+{% block header %}
+    <a class="nav-link active" href="{% url 'applicant' %}">Startseite</a>
+    {% if status is None %}
+        <a class="nav-link" href="{% url 'bewerben' %}">Bewerben</a>
+    {% endif %}
+        <a class="nav-link" href="{% url 'daten' %}">Meine Daten</a>
+        <a class="nav-link" href="{% url 'logout_applicant' %}">Ausloggen</a>
+{% endblock header %}
+
+
+{% block content %}
+    <h1 class="cover-heading">Willkommen, {{ user.first_name }} {{ user.last_name }} !</h1>
+    <main role="main" class="inner cover">
+        {% if status is None %}
+            <h4 class="cover-heading">Du hast noch keine Bewerbung eingereicht.</h4>
+            <h3 class="cover-heading"><a href="{% url 'bewerben' %}">Jetzt bewerben?</a></h3>
+        {% elif status is not None %}
+            <h4 class="cover-heading mt-4">Status deiner Bewerbung:</h4>
+            {% if status == 0 %}
+                <div class="btn btn-lg btn-warning mt-1" style="opacity: 80%;">In Bearbeitung</div>
+            {% elif status == 1 %}
+                <div class="btn btn-lg btn-success mt-1" style="opacity: 80%;">Angenommen</div>
+            {% elif status == 2 %}
+                <div class="btn btn-lg btn-danger mt-1" style="opacity: 80%;">Abgelehnt</div>
+            {% endif %}
+        {% endif %}
+    </main>
+{% endblock content %}

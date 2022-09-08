@@ -1,0 +1,68 @@
+{% extends 'registrierung/registrierung_base.html' %}
+{% load static %}
+
+
+{% block form %}
+    <input type="email" name="email" class="form-control" placeholder="Email-Adresse" required autofocus>
+    <input type="password" name="passwort" class="form-control" placeholder="Passwort" required>
+    <input type="text" name="first_name" class="form-control mt-2" placeholder="Vorname" required>
+    <input type="text" name="last_name" class="form-control" placeholder="Nachname" required>
+    <div class="row mt-5">
+        <div class="col">
+            <h6>Bitte lade ein Empfehlungsschreiben hoch.</h6>
+        </div>
+    </div>
+    <input type="file" name="empfehlungsschreiben" accept="application/pdf">
+    <div class="row mt-5">
+        <div class="col">
+            <h6>Bitte wählen Sie Ihren Bildungsabschluss aus.</h6>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="btn-group">
+                <button type="button" class="btn btn-dark dropdown-toggle" id="bildungsgradButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Kein Abschluss
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" id="abitur" href="#">Allgemeine Hochschulreife</a>
+                    <a class="dropdown-item" id="fachabitur" href="#">Fachgebundene Hochschulreife</a>
+                    <a class="dropdown-item" id="ausbildung" href="#">Ausbildung</a>
+                    <a class="dropdown-item" id="keinabschluss" href="#">Keinen Abschluss</a>
+                </div>
+            </div>
+            <input type="hidden" name="abschluss" id="abschluss" value="keinabschluss">
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col">
+            <h6>Bitte geben Sie Ihre Note an.</h6>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <input type="number" name="note" min="1.0" max="4.0" step="0.1" class="form-control" required>
+        </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col">
+            <h6>Haben Sie bereits Auslandserfahrung gesammelt?</h6>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="btn-group">
+                <button type="button" class="btn btn-dark dropdown-toggle" id="auslandserfahrungButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Nein
+                </button>
+                <div class="dropdown-menu">
+                    <a class="dropdown-item" id="auslandserfahrung_ja" href="#">Ja</a>
+                    <a class="dropdown-item" id="auslandserfahrung_nein" href="#">Nein</a>
+                </div>
+            </div>
+            <input type="hidden" name="auslandserfahrung" id="auslandserfahrung" value="nein">
+        </div>
+    </div>
+    <button class="btn btn-lg btn-primary btn-block mt-5" type="submit">Registrierung abschließen</button>
+    <script src="{% static 'registrierung/js/registrierung.js' %}"></script>
+ {% endblock form %}

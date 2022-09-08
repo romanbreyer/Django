@@ -1,0 +1,64 @@
+{% extends 'applicant/applicant_base.html' %}
+
+
+{% block header %}
+    <a class="nav-link" href="{% url 'applicant' %}">Startseite</a>
+    {% if status is None %}
+        <a class="nav-link" href="{% url 'bewerben' %}">Bewerben</a>
+    {% endif %}
+    <a class="nav-link active" href="{% url 'daten' %}">Meine Daten</a>
+    <a class="nav-link" href="{% url 'logout_applicant' %}">Ausloggen</a>
+{% endblock header %}
+
+
+{% block content %}
+  <h1 class="cover-heading">Meine Daten</h1>
+  <main role="main" class="inner cover mt-3">
+    <div class="row">
+      <label class="col-form-label col-5">Vorname: </label>
+      <input type="text" class="form-control col-5" placeholder="{{ user.first_name }}" readonly>
+    </div>
+
+    <div class="row mt-1">
+      <label class="col-form-label col-5">Nachname: </label>
+      <input type="text" class="form-control col-5" placeholder="{{ user.last_name }}" readonly>
+    </div>
+
+    <div class="row mt-1">
+      <label class="col-form-label col-5">Note: </label>
+      <input type="number" class="form-control col-5" placeholder="{{ user.note }}" readonly>
+    </div>
+
+    <div class="row mt-1">
+      <label class="col-form-label col-5">Auslandserfahrung: </label>
+      <input type="text" class="form-control col-5" placeholder="{% if user.auslandserfahrung is False %}Nein{% elif user.auslandserfahrung is True %}Ja{% endif %}" readonly>
+    </div>
+
+    <div class="row mt-1">
+      <label class="col-form-label col-5">Empfehlungsschreiben: </label>
+      <div class="form-control col-5">
+        {% if user.empfehlungsschreiben != '' %}
+          <a href="/media/{{ user.empfehlungsschreiben }}" style="color: #333;" target="_blank">
+            Mein Empfehlungsschreiben<i class="fas fa-file-pdf"></i>
+          </a>
+        {% else %}
+          Kein Empfehlungsschreiben hochgeladen
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="row mt-1">
+      <label class="col-form-label col-5">Abschluss: </label>
+      <input type="text" class="form-control col-5" placeholder="
+        {% if user.abschluss == 'abitur'%}
+          Allgemeine Hochschulreife
+        {% elif user.abschluss == 'fachabitur'%}
+          Fachgebundene Hochschulreife
+        {% elif user.abschluss == 'ausbildung' %}
+          Ausbildung
+        {% else %}
+          Keinen Abschluss
+        {% endif %}" readonly>
+    </div>
+  </main>
+{% endblock content %}

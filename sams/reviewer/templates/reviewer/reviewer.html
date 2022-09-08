@@ -1,0 +1,130 @@
+{% extends 'reviewer/reviewer_base.html' %}
+{% load static %}
+
+
+{% block header %}
+  <nav class="mt">
+    <br>
+    <div class="text-right mr-4">
+      <a href="{% url 'log_out_reviewer' %}">
+        <i class="fas fa-sign-out-alt fa-2x">Ausloggen</i>
+      </a>
+    </div>
+    <form id="navbarForm" action="" method="POST">
+      {% csrf_token %}
+      <button class="btn btn-lg btn-warning" id="showOpenBtn"{% if status != 0 %} style="opacity: 63%;"{% endif %}>Offen</button>
+      <button class="btn btn-lg btn-success" id="showAcceptBtn"{% if status != 1 %} style="opacity: 63%;"{% endif %}>Angenommen</button>
+      <button class="btn btn-lg btn-danger" id="showRejectBtn"{% if status != 2 %} style="opacity: 63%;"{% endif %}>Abgelehnt</button>
+      <input type="hidden" name="fromNavBar" value="True">
+      <input type="hidden" name="status" id="navBarStatusInput">
+    </form>
+  </nav>
+  <p class="text-warning mt-5">Offene Bewerbungen: {{ open_applications_length }} / {{ total_applications_length }}</p>
+  <p class="text-success">Akzeptierte Bewerbungen: {{ accepted_applications_length }} / {{ total_applications_length }}</p>
+  <p class="text-danger">Abgelehnte Bewerbungen: {{ rejected_applications_length }} / {{ total_applications_length }}</p>
+{% endblock header %}
+
+
+{% block tabelle %}
+  <table class="table">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col">E-Mail</th>
+        <th scope="col">Vorname </th>
+        <th scope="col">Nachname</th>
+        <th scope="col">Abschluss</th>
+        <th scope="col">Note</th>
+        <th scope="col">Auslandserfahrung</th>
+        <th scope="col">Empfehlungsschreiben</th>
+        <th scope="col"><b>Score*</b></th>
+        <th scope="col">Status</th>
+        <th scope="col">Akzeptieren oder Ablehnen</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for application in applications %}
+        <tr>
+          <td>{{ application.applicant.username }}</td>
+          <td>{{ application.applicant.first_name }}</td>
+          <td>{{ application.applicant.last_name }}</td>
+          <td>{% if application.applicant.abschluss == 'abitur'%}Allgemeine Hochschulreife
+          {% elif application.applicant.abschluss == 'fachabitur'%}Fachgebundene Hochschulreife
+          {% elif application.applicant.abschluss == 'ausbildung' %}Ausbildung
+          {% else %}Keinen Abschluss
+          {% endif %}</td>
+          <td>{{ application.applicant.note }}</td>
+          <td>
+            {% if application.applicant.auslandserfahrung %}
+              Ja
+            {% else %}
+              Nein
+            {% endif %}
+          </td>
+          <td>
+            {% if application.applicant.empfehlungsschreiben != '' %}
+              <a href="/media/{{ application.applicant.empfehlungsschreiben }}" style="color:  #3E93BD;" target="_blank">
+                <i class="fas fa-file-pdf">Empfehlungsschreiben</i>
+              </a>
+            {% else %}
+              Kein Empfehlungsschreiben
+            {% endif %}
+          </td>
+          <td>
+            {{ application.score }}
+          </td>
+          <td>
+            {% if application.status == 0 %}
+              <button class="btn btn-warning">Offen</button>
+            {% elif application.status == 1 %}
+              <button class="btn btn-success">Angenommen</button>
+            {% elif application.status == 2 %}
+              <button class="btn btn-danger">Abgelehnt</button>
+            {% endif %}
+          </td>
+          <td>
+            <button type="button" name="acceptBtn" id="{{application.id }}" class="btn btn-success"{% if status != 0 %} style="opacity: 75%;"{% endif %}>Akzeptieren</button>
+            <button type="button" name="rejectBtn" id="{{application.id }}" class="btn btn-danger"{% if status != 0 %} style="opacity: 75%;"{% endif %}>Ablehnen</button>
+          </td> 
+        </tr>
+      {% endfor %}
+      <form id="applicationForm" action="" method="POST">
+        {% csrf_token %}
+        <input type="hidden" name="accept" id="acceptInput">
+        <input type="hidden" name="applicationId" id="applicationIdInput">
+        <input type="hidden" name="fromNavBar" value="False">
+        <input type="hidden" name="status" value="{% if status is not None %}{{ status}}{% else %}0{% endif %}">
+      </form>
+      {% if status == 0 %}
+        <script>
+          var acceptBtns = document.getElementsByName('acceptBtn');
+          var rejectBtns = document.getElementsByName('rejectBtn');
+
+          var applicationForm = document.getElementById('applicationForm');
+          var acceptInput = document.getElementById('acceptInput');
+          var applicationIdInput = document.getElementById('applicationIdInput');
+
+          for (var acceptBtn of acceptBtns) {
+            setEventListenerToBtn(acceptBtn);
+          }
+          
+          for (var rejectBtn of rejectBtns) {
+            setEventListenerToBtn(rejectBtn);
+          }
+
+          function setEventListenerToBtn(btn) {
+            btn.addEventListener('click', () => {
+              if (btn.name == 'acceptBtn') {
+                acceptInput.value = 'yes';
+              } else if (btn.name == 'rejectBtn') {
+                acceptInput.value = 'no';
+              }
+              applicationIdInput.value = btn.id;
+              applicationForm.submit();
+            });
+          }
+        </script>
+      {% endif %}
+      <script src="{% static 'reviewer/js/reviewer.js' %}"></script>
+    </tbody>
+  </table>
+{% endblock tabelle %}
